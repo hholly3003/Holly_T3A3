@@ -6,48 +6,49 @@ from schemas.ArtistSchema import artists_schema, artist_schema
 artists = Blueprint("artists",__name__, url_prefix="/artists")
 
 @artists.route("/", methods=["GET"])
-def artists_index():
+def artist_index():
     #Return all artists
     artists = Artist.query.all()
     serialized_data = artists_schema.dump(artists)
     return jsonify(serialized_data)
 
-# @artists.route("/", methods=["POST"])
-# def playlist_create():
-#     #Create a new playlist
-#     playlist_fields = playlist_schema.load(request.json)
+@artists.route("/", methods=["POST"])
+def artist_create():
+    #Create a new artist
+    artist_fields = artist_schema.load(request.json)
 
-#     new_playlist = Playlist()
-#     new_playlist.title = playlist_fields["title"]
+    new_artist = Artist()
+    new_artist.name = artist_fields["name"]
+    new_artist.uri = artist_fields["uri"]
 
-#     db.session.add(new_playlist)
-#     db.session.commit()
+    db.session.add(new_artist)
+    db.session.commit()
 
-#     return jsonify(playlist_schema.dump(new_playlist))
+    return jsonify(artist_schema.dump(new_artist))
 
-# @artists.route("/<int:id>", methods=["GET"])
-# def playlist_show(id):
-#     #Return a single book
-#     playlist = Playlist.query.get(id)
-#     return jsonify(playlist_schema.dump(playlist))
+@artists.route("/<int:id>", methods=["GET"])
+def artist_show(id):
+    #Return a single artist
+    artist = Artist.query.get(id)
+    return jsonify(artist_schema.dump(artist))
 
-# @artists.route("/<int:id>", methods=["PUT", "PATCH"])
-# def playlist_update(id):
-#     #Update a book
-#     playlists = Playlist.query.filter_by(id=id)
-#     playlist_fields = playlist_schema.load(request.json)
-#     playlists.update(playlist_fields)
-#     db.session.commit()
+@artists.route("/<int:id>", methods=["PUT", "PATCH"])
+def artist_update(id):
+    #Update an artist
+    artists = Artist.query.filter_by(id=id)
+    artist_fields = artist_schema.load(request.json)
+    artists.update(artist_fields)
+    db.session.commit()
 
-#     return jsonify(playlist_schema.dump(playlists[0]))
+    return jsonify(artist_schema.dump(artists[0]))
 
-# @artists.route("/<int:id>", methods=["DELETE"])
-# def playlist_delete(id):
-#     playlist = Playlist.query.get(id)
+@artists.route("/<int:id>", methods=["DELETE"])
+def artist_delete(id):
+    artist = Artist.query.get(id)
     
-#     if not playlist:
-#         return abort(404)
-#     db.session.delete(playlist)
-#     db.session.commit()
+    if not artist:
+        return abort(404)
+    db.session.delete(artist)
+    db.session.commit()
 
-#     return jsonify(playlist_schema.dump(playlist))
+    return jsonify(artist_schema.dump(artist))

@@ -1,6 +1,9 @@
 from main import db
 from datetime import datetime
+from models.Artist import Artist
+from models.Track import Track
 import enum
+
 
 class AlbumType(enum.Enum):
     ALBUM = "ALBUM"

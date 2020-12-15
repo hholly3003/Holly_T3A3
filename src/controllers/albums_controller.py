@@ -30,8 +30,6 @@ def album_show(id):
 
 #     return jsonify(album_schema.dump(new_album))
 
-
-
 # @albums.route("/<int:id>", methods=["PUT", "PATCH"])
 # def album_update(id):
 #     albums = Album.query.filter_by(id=id)

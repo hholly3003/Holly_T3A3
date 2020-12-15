@@ -7,7 +7,7 @@ class AlbumType(enum.Enum):
     SINGLE = "SINGLE"
     COMPILATION = "COMPILATION"
 
-Album_Artist = db.Table("album_artist",
+album_artist = db.Table("album_artist",
     db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
     db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'))
 )
@@ -15,7 +15,8 @@ Album_Artist = db.Table("album_artist",
 class Album(db.Model):
     __tablename__ = "albums"
 
-    id = db.Column(db.Integer, primary_key=True)
+    album_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     album_type = db.Column(db.Enum(AlbumType), nullable=False)
     release_date = db.Column(db.DateTime, nullable=False,default=datetime.now)
+    album_artist = db.relationship("Artist", backref=db.backref("album_artist", lazy="dynamic"))

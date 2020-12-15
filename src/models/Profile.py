@@ -8,6 +8,6 @@ class Profile(db.Model):                                                        
     firstname = db.Column(db.String(), nullable=False)                               # Firstname, string, must be present
     lastname = db.Column(db.String(), nullable=False)                                # Lastname, string, must be present
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)       # user_id is an integer and the Foreign key comes from the users table id. It is required
-    
+
     def __repr__(self):                                                              
         return f"<Profile {self.username}>"                                          # When the Profile is printed it now shows the username instead of the id

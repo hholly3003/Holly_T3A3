@@ -9,7 +9,8 @@ class User(db.Model):                                                           
     email = db.Column(db.String(), nullable=False, unique=True)                       # Email column, string andit must be unique
     password = db.Column(db.String(), nullable=False)                                 # The password is a string and must be present
     profile = db.relationship('Profile', backref=backref('user', uselist=False))      # Creating the relationship to the profile table
-    playlists = db.relationship('Playlist', cascade= 'all, delete' backref='owner')
+    playlists = db.relationship('Playlist', cascade= 'all, delete', backref='owner')
+    collections = db.relationship('Collection', cascade='all, delete', backref='owner')
 
     def __repr__(self):                                                               # When printing the model we will see its email attribute
         return f"<User {self.email}>"

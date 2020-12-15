@@ -10,6 +10,5 @@ class UserSchema(ma.SQLAlchemyAutoSchema):                              # Genera
     email = ma.String(required=True, validate=Length(min=4))            # The email is required and must be at least 6 chars long
     password = ma.String(required=True, validate=Length(min=6))         # The email is required and must be at least 6 chars long
 
-
 user_schema = UserSchema()                                              # Schema for a single user
 users_schema = UserSchema(many=True)                                    # Schema for multiple users

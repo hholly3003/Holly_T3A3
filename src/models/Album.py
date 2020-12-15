@@ -11,8 +11,8 @@ class AlbumType(enum.Enum):
     COMPILATION = "COMPILATION"
 
 album_artist = db.Table("album_artist",
-    db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
-    db.Column('artist_id', db.Integer, db.ForeignKey('artists.id'))
+    db.Column('album_id', db.Integer, db.ForeignKey('albums.album_id')),
+    db.Column('artist_id', db.Integer, db.ForeignKey('artists.artist_id'))
 )
 
 class Album(db.Model):

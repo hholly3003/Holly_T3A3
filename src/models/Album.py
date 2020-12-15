@@ -19,5 +19,5 @@ class Album(db.Model):
     name = db.Column(db.String())
     album_type = db.Column(db.Enum(AlbumType), nullable=False)
     release_date = db.Column(db.DateTime, nullable=False,default=datetime.now)
-    album_artist = db.relationship("Artist", backref=db.backref("album_artist", lazy="dynamic"))
-    tracks = db.relationship("Track", backref="album_id")
+    album_artist = db.relationship('Artist', secondary=album_artist, backref=db.backref('album_artist', lazy='dynamic'))
+    tracks = db.relationship('Track', backref='album')

@@ -9,8 +9,7 @@ artists = Blueprint("artists",__name__, url_prefix="/artists")
 def artist_index():
     #Return all artists
     artists = Artist.query.all()
-    serialized_data = artists_schema.dump(artists)
-    return jsonify(serialized_data)
+    return jsonify(artists_schema.dump(artists))
 
 @artists.route("/", methods=["POST"])
 def artist_create():

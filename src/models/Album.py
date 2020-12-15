@@ -18,4 +18,4 @@ class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     album_type = db.Column(db.Enum(AlbumType), nullable=False)
-    release_date = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
+    release_date = db.Column(db.DateTime, nullable=False,default=datetime.now)

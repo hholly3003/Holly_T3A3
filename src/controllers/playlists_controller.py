@@ -11,7 +11,7 @@ playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
 
 @playlists.route("/", methods=["GET"])
 def playlist_index():
-    playlists = Playlist.query.option(joinedload("user")).all()
+    playlists = Playlist.query.options(joinedload("user")).all()
     return jsonify(playlists_schema.dump(playlists))
 
 @playlists.route("/", methods=["POST"])
@@ -20,13 +20,12 @@ def playlist_index():
 def playlist_create(user=None):
     #Create a new playlist
     playlist_fields = playlist_schema.load(request.json)
-    user_id = get_jwt_identity()
     
     new_playlist = Playlist()
     new_playlist.name = playlist_fields["name"]
-    new_playlist.description = ""
-    new_playlist.collaborative = False
-    new_playlist.public = True
+    new_playlist.description = playlist_fields["description"]
+    new_playlist.collaborative = playlist_fields["collaborative"]
+    new_playlist.public = playlist_fields["public"]
     
     user.playlists.append(new_playlist)
 
@@ -46,7 +45,6 @@ def playlist_show(id):
 def playlist_update(id, user=None):
     #Update a book
     playlist_fields = playlist_schema.load(request.json)
-    user_id = get_jwt_identity()
     
     playlists = Playlist.query.filter_by(playlist_id=id, owner_id=user.id)
     if playlists.count() != 1:
@@ -61,8 +59,6 @@ def playlist_update(id, user=None):
 @jwt_required
 @verify_user
 def playlist_delete(id, user=None):
-    user_id = get_jwt_identity()
-
     playlist = Playlist.query.filter_by(playlist_id=id, owner_id=user.id).first()
     if not playlist:
         return abort(400)

@@ -2,7 +2,7 @@ from main import db
 from flask import Blueprint, request, jsonify
 from models.Playlist import Playlist
 from schemas.PlaylistSchema import playlist_schema, playlists_schema
-# from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required
 
 playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
 
@@ -11,6 +11,7 @@ def playlist_index():
     playlists = Playlist.query.all()
     return jsonify(playlists_schemas.dump(playlists))
 
+@jwt_required
 @playlists.route("/", methods=["POST"])
 def playlist_create():
     #Create a new playlist
@@ -30,6 +31,7 @@ def playlist_show(id):
     playlist = Playlist.query.get(id)
     return jsonify(playlist_schema.dump(playlist))
 
+@jwt_required
 @playlists.route("/<int:id>", methods=["PUT", "PATCH"])
 def playlist_update(id):
     #Update a book
@@ -40,6 +42,7 @@ def playlist_update(id):
 
     return jsonify(playlist_schema.dump(playlists[0]))
 
+@jwt_required
 @playlists.route("/<int:id>", methods=["DELETE"])
 def playlist_delete(id):
     playlist = Playlist.query.get(id)

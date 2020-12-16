@@ -1,7 +1,7 @@
 from main import db
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, abort
 from models.Playlist import Playlist
-from models.Playlist import User
+from models.User import User
 from schemas.PlaylistSchema import playlist_schema, playlists_schema
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -12,21 +12,25 @@ def playlist_index():
     playlists = Playlist.query.all()
     return jsonify(playlists_schema.dump(playlists))
 
-@jwt_required
 @playlists.route("/", methods=["POST"])
+@jwt_required
 def playlist_create():
     #Create a new playlist
     playlist_fields = playlist_schema.load(request.json)
     user_id = get_jwt_identity()
+    print(user_id)
 
     user = User.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
 
     new_playlist = Playlist()
-    new_playlist.title = playlist_fields["title"]
+    new_playlist.name = playlist_fields["name"]
+    new_playlist.description = ""
+    new_playlist.collaborative = False
+    new_playlist.public = True
     
-    user.append.playlists(new_playlist)
+    user.playlists.append(new_playlist)
 
     db.session.commit()
 
@@ -34,7 +38,7 @@ def playlist_create():
 
 @playlists.route("/<int:id>", methods=["GET"])
 def playlist_show(id):
-    #Return a single book
+    #Return a single playlist
     playlist = Playlist.query.get(id)
     return jsonify(playlist_schema.dump(playlist))
 

@@ -17,6 +17,7 @@ def drop_db():
 def seed_db():
     from models.User import User                                # Importing the User model
     from models.Profile import Profile                          # Importing the Profile model
+    from models.Playlist import Playlist
     from main import bcrypt                                     # Hashing module for the passwords
     from faker import Faker                                     # Importing the faker module for fake data
     import random                                               # Importing random from the python standard library
@@ -45,4 +46,13 @@ def seed_db():
 
     db.session.commit()                                                         # Commit the session to the database
 
+    for i in range(20):
+        playlist = Playlist()
+        playlist.name = faker.catch_phrase()
+        playlist.owner_id = random.choice(users).id
+        playlist.collaborative = False
+        playlist.public = True
+        db.session.add(playlist)
+
+    db.session.commit()
     print("Tables seeded")                                                      # Print a message to let the user know they 

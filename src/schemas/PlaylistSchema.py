@@ -10,7 +10,7 @@ class PlaylistSchema(ma.SQLAlchemyAutoSchema):
     name = ma.String(required=True, validate=Length(min=1))
     collaborative = ma.Boolean(required=True)
     public = ma.Boolean(required=True)
-    user = ma.Nested(UserSchema)
+    owner = ma.Nested(UserSchema)
     
 playlist_schema = PlaylistSchema()
 playlists_schema = PlaylistSchema(many=True)

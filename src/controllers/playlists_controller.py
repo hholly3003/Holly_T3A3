@@ -4,13 +4,14 @@ from models.Playlist import Playlist
 from models.User import User
 from schemas.PlaylistSchema import playlist_schema, playlists_schema
 from services.auth_service import verify_user
+from sqlalchemy.orm import joinedload
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
 
 @playlists.route("/", methods=["GET"])
 def playlist_index():
-    playlists = Playlist.query.all()
+    playlists = Playlist.query.option(joinedload("user")).all()
     return jsonify(playlists_schema.dump(playlists))
 
 @playlists.route("/", methods=["POST"])

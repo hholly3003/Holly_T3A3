@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify, abort
 from models.Playlist import Playlist
 from models.User import User
 from schemas.PlaylistSchema import playlist_schema, playlists_schema
+from services.auth_service import verify_user
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
@@ -14,15 +15,12 @@ def playlist_index():
 
 @playlists.route("/", methods=["POST"])
 @jwt_required
-def playlist_create():
+@verify_user
+def playlist_create(user=None):
     #Create a new playlist
     playlist_fields = playlist_schema.load(request.json)
     user_id = get_jwt_identity()
     
-    user = User.query.get(user_id)
-    if not user:
-        return abort(401, description="Invalid user")
-
     new_playlist = Playlist()
     new_playlist.name = playlist_fields["name"]
     new_playlist.description = ""
@@ -43,17 +41,13 @@ def playlist_show(id):
 
 @playlists.route("/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required
-def playlist_update(id):
+@verify_user
+def playlist_update(id, user=None):
     #Update a book
     playlist_fields = playlist_schema.load(request.json)
     user_id = get_jwt_identity()
-    print(user_id)
-    user = User.query.get(user_id)
-    if not user:
-        return abort(401, description="Invalid user")
     
     playlists = Playlist.query.filter_by(playlist_id=id, owner_id=user.id)
-
     if playlists.count() != 1:
         return abort(401, description="Unauthorised to update this book")
     
@@ -64,15 +58,11 @@ def playlist_update(id):
 
 @playlists.route("/<int:id>", methods=["DELETE"])
 @jwt_required
-def playlist_delete(id):
+@verify_user
+def playlist_delete(id, user=None):
     user_id = get_jwt_identity()
 
-    user = User.query.get(user_id)
-    if not user:
-        return abort(401, description="Invalid user")
-
     playlist = Playlist.query.filter_by(playlist_id=id, owner_id=user.id).first()
-
     if not playlist:
         return abort(400)
 

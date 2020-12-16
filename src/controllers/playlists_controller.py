@@ -1,6 +1,7 @@
 from main import db
 from flask import Blueprint, request, jsonify
 from models.Playlist import Playlist
+from models.Playlist import User
 from schemas.PlaylistSchema import playlist_schema, playlists_schema
 from flask_jwt_extended import jwt_required, get_jwt_identity
 

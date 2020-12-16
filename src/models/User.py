@@ -1,5 +1,7 @@
 from main import db                                                                   # This is the db instance created by SQLAlchemy
 from models.Profile import Profile                                                    # Importing the Profile model
+from models.Playlist import Playlist
+from models.Collection import Collection
 from sqlalchemy.orm import backref                                                    # Used to make references to other tables
 
 class User(db.Model):                                                                 # Creating a Users class inheriting from db.Model

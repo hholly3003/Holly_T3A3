@@ -2,21 +2,26 @@ import os
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_SECRET_KEY = "Dev Key"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
         value = os.getenv("DB_URI")
-
         if not value:
             raise ValueError("DB_URI is not set!")
-
         return value
 
 class DevelopmentConfig(Config):
     DEBUG = True
 
 class ProductionConfig(Config):
-    pass
+    @property
+    def JWT_SECRET_KEY(self):
+        value = os.environ.get("JWT_SECRET_KEY")                    # Use the production JWT secret
+        if not value:
+            raise ValueError("JWT Secret Key is not set")           # If no JWT then raise "JWT Secret Key is not set" error
+
+        return value                                                # Return the JWT
 
 class TestingConfig(Config):
     TESTING = True

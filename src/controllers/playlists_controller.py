@@ -18,8 +18,7 @@ def playlist_create():
     #Create a new playlist
     playlist_fields = playlist_schema.load(request.json)
     user_id = get_jwt_identity()
-    print(user_id)
-
+    
     user = User.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
@@ -42,18 +41,18 @@ def playlist_show(id):
     playlist = Playlist.query.get(id)
     return jsonify(playlist_schema.dump(playlist))
 
-@jwt_required
 @playlists.route("/<int:id>", methods=["PUT", "PATCH"])
+@jwt_required
 def playlist_update(id):
     #Update a book
     playlist_fields = playlist_schema.load(request.json)
     user_id = get_jwt_identity()
-
+    print(user_id)
     user = User.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
     
-    playlists = Playlist.query.filter_by(id=id, user_id=user.id)
+    playlists = Playlist.query.filter_by(playlist_id=id, owner_id=user.id)
 
     if playlists.count() != 1:
         return abort(401, description="Unauthorised to update this book")
@@ -63,8 +62,8 @@ def playlist_update(id):
 
     return jsonify(playlist_schema.dump(playlists[0]))
 
-@jwt_required
 @playlists.route("/<int:id>", methods=["DELETE"])
+@jwt_required
 def playlist_delete(id):
     user_id = get_jwt_identity()
 
@@ -72,7 +71,7 @@ def playlist_delete(id):
     if not user:
         return abort(401, description="Invalid user")
 
-    playlist = Playlist.query.filter_by(id=id, user_id=user.id).first()
+    playlist = Playlist.query.filter_by(playlist_id=id, owner_id=user.id).first()
 
     if not playlist:
         return abort(400)

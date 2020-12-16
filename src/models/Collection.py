@@ -2,8 +2,8 @@ from main import db
 from models.Playlist import Playlist
 
 collection_playlists = db.Table("collection_playlists",
-    db.Column('collection_id', db.Integer, db.ForeignKey('colections.collection_id')),
-    db.Column('playlist_id', db.Integer, db.ForeignKey('playlists.playlists_id'))
+    db.Column('collection_id', db.Integer, db.ForeignKey('collections.collection_id')),
+    db.Column('playlist_id', db.Integer, db.ForeignKey('playlists.playlist_id'))
 )
 
 class Collection(db.Model):

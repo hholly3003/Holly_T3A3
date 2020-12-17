@@ -11,19 +11,19 @@ def artist_index():
     artists = Artist.query.all()
     return jsonify(artists_schema.dump(artists))
 
-@artists.route("/", methods=["POST"])
-def artist_create():
-    #Create a new artist
-    artist_fields = artist_schema.load(request.json)
+# @artists.route("/", methods=["POST"])
+# def artist_create():
+#     #Create a new artist
+#     artist_fields = artist_schema.load(request.json)
 
-    new_artist = Artist()
-    new_artist.name = artist_fields["name"]
-    new_artist.uri = artist_fields["uri"]
+#     new_artist = Artist()
+#     new_artist.name = artist_fields["name"]
+#     new_artist.uri = artist_fields["uri"]
 
-    db.session.add(new_artist)
-    db.session.commit()
+#     db.session.add(new_artist)
+#     db.session.commit()
 
-    return jsonify(artist_schema.dump(new_artist))
+#     return jsonify(artist_schema.dump(new_artist))
 
 @artists.route("/<int:id>", methods=["GET"])
 def artist_show(id):
@@ -31,23 +31,23 @@ def artist_show(id):
     artist = Artist.query.get(id)
     return jsonify(artist_schema.dump(artist))
 
-@artists.route("/<int:id>", methods=["PUT", "PATCH"])
-def artist_update(id):
-    #Update an artist
-    artists = Artist.query.filter_by(id=id)
-    artist_fields = artist_schema.load(request.json)
-    artists.update(artist_fields)
-    db.session.commit()
+# @artists.route("/<int:id>", methods=["PUT", "PATCH"])
+# def artist_update(id):
+#     #Update an artist
+#     artists = Artist.query.filter_by(id=id)
+#     artist_fields = artist_schema.load(request.json)
+#     artists.update(artist_fields)
+#     db.session.commit()
 
-    return jsonify(artist_schema.dump(artists[0]))
+#     return jsonify(artist_schema.dump(artists[0]))
 
-@artists.route("/<int:id>", methods=["DELETE"])
-def artist_delete(id):
-    artist = Artist.query.get(id)
+# @artists.route("/<int:id>", methods=["DELETE"])
+# def artist_delete(id):
+#     artist = Artist.query.get(id)
     
-    if not artist:
-        return abort(404)
-    db.session.delete(artist)
-    db.session.commit()
+#     if not artist:
+#         return abort(404)
+#     db.session.delete(artist)
+#     db.session.commit()
 
-    return jsonify(artist_schema.dump(artist))
+#     return jsonify(artist_schema.dump(artist))

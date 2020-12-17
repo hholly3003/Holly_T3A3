@@ -1,5 +1,6 @@
 from main import ma
 from models.Collection import Collection
+from models.UserSchema import UserSchema
 from marshmallow.validate import Length
 
 class CollectionSchema(ma.SQLAlchemyAutoSchema):
@@ -9,6 +10,7 @@ class CollectionSchema(ma.SQLAlchemyAutoSchema):
     name = ma.String(required=True, validate=Length(min=1))
     collaborative = ma.Boolean(required=True)
     public = ma.Boolean(required=True)
+    owner = ma.Nested(UserSchema)
     
 collection_schema = CollectionSchema()
 collections_schema = CollectionSchema(many=True)

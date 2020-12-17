@@ -11,7 +11,7 @@ playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
 
 @playlists.route("/", methods=["GET"])
 def playlist_index():
-    playlists = Playlist.query.options(joinedload("user")).all()
+    playlists = Playlist.query.options(joinedload("owner")).all()
     return jsonify(playlists_schema.dump(playlists))
 
 @playlists.route("/", methods=["POST"])
@@ -43,7 +43,7 @@ def playlist_show(id):
 @jwt_required
 @verify_user
 def playlist_update(id, user=None):
-    #Update a book
+    #Update a playlist
     playlist_fields = playlist_schema.load(request.json)
     
     playlists = Playlist.query.filter_by(playlist_id=id, owner_id=user.id)

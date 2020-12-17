@@ -1,6 +1,6 @@
 from main import ma
 from models.Collection import Collection
-from models.UserSchema import UserSchema
+from schemas.UserSchema import UserSchema
 from marshmallow.validate import Length
 
 class CollectionSchema(ma.SQLAlchemyAutoSchema):

@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from models.Track import Track
 from schemas.TrackSchema import track_schema, tracks_schema
 from sqlalchemy.orm import joinedload
+from flask_jwt_extended import jwt_required
 
 tracks = Blueprint("tracks", __name__, url_prefix="/tracks")
 
@@ -11,8 +12,9 @@ def track_index():
     tracks = Track.query.options(joinedload("album")).all()
     return jsonify(tracks_schema.dump(tracks))
 
+@jwt_required
 @tracks.route("/", methods=["POST"])
-def track_create(user):
+def track_create():
     track_fields = track_schema.load(request.json)
 
     new_track = Track()
@@ -27,3 +29,24 @@ def track_create(user):
     db.session.commit()
 
     return jsonify(track_schema.dump(new_track))
+
+@tracks.route("/<int:id>", methods=["GET"])
+def track_show(id):
+    #Return a single track
+    track = Track.query.get(id)
+    return jsonify(track_schema.dump(track))
+
+# @tracks.route("/<int:id>", methods=["PUT", "PATCH"])
+# @jwt_required
+# def track_update(id):
+#     #Update to love a track
+#     track_fields = track_schema.load(request.json)
+    
+#     playlists = Playlist.query.filter_by(playlist_id=id, owner_id=user.id)
+#     if playlists.count() != 1:
+#         return abort(401, description="Unauthorised to update this book")
+    
+#     playlists.update(playlist_fields)
+#     db.session.commit()
+
+#     return jsonify(playlist_schema.dump(playlists[0]))

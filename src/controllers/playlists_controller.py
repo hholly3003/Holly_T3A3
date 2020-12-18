@@ -1,5 +1,5 @@
 from main import db
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify, abort, render_template
 from models.Playlist import Playlist
 from models.User import User
 from schemas.PlaylistSchema import playlist_schema, playlists_schema
@@ -12,7 +12,8 @@ playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
 @playlists.route("/", methods=["GET"])
 def playlist_index():
     playlists = Playlist.query.options(joinedload("owner")).all()
-    return jsonify(playlists_schema.dump(playlists))
+    #return jsonify(playlists_schema.dump(playlists))
+    return render_template("playlists.html", playlists=playlists)
 
 @playlists.route("/", methods=["POST"])
 @jwt_required

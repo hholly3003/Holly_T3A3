@@ -9,6 +9,7 @@ albums = Blueprint("albums", __name__, url_prefix="/albums")
 def album_index():
     #Return all albums
     albums = Album.query.all()
+    print(albums[0].album_type, "******************************")
     return jsonify(albums_schema.dump(albums))
 
 @albums.route("/<int:id>", methods=["GET"])

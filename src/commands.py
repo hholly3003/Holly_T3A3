@@ -17,6 +17,8 @@ def seed_db():
     from models.Track import Track
     from models.Album import Album
     from models.Artist import Artist
+    from models.AlbumType import AlbumType
+    from models.Collection import Collection
     from main import bcrypt                                     # Hashing module for the passwords
     from faker import Faker                                     # Importing the faker module for fake data
     import random                                               # Importing random from the python standard library
@@ -24,6 +26,7 @@ def seed_db():
     faker = Faker()
     users = []
     albums = []
+    album_types = ["SINGLE", "ALBUM", "COMPILATION"]
 
     for i in range(5):                                                           # Do this 5 times
         user = User()                                                           # Create an user object from the User model
@@ -43,23 +46,33 @@ def seed_db():
         profile.user_id = users[i].id                                           # Add a user_id to the profile object. This comes from real ids from the users list
 
         db.session.add(profile)                                                 # Add the profile to the session
-    db.session.commit()                                                        # Commit the session to the database
+    db.session.commit()                                                         # Commit the session to the database
 
     for i in range(10):
         album = Album()
         album.name = faker.catch_phrase()
-        album.album_type = "SINGLE"
         db.session.add(album)
         albums.append(album)
     db.session.commit()
 
-    for i in range(20):
-        playlist = Playlist()                                                   # Create a playlist object from Playlist model
-        playlist.name = faker.catch_phrase()
-        playlist.owner_id = random.choice(users).id
-        playlist.collaborative = False
-        playlist.public = True
+    for at in album_types:
+        album_type = AlbumType()
+        album_type.name = at
+        for album in albums:
+            album_type.album_id = album.album_id
 
+        db.session.add(album_type)
+    db.session.commit()
+
+
+    for i in range(5):
+        artist = Artist()
+        artist.name = faker.name_nonbinary()
+
+        db.session.add(artist)
+    db.session.commit()  
+
+    for i in range(20):
         track = Track()
         track.name = faker.file_name()
         track.track_num = random.choice(range(20))
@@ -68,15 +81,21 @@ def seed_db():
         track.duration_ms = 2500
         track.explicit = True
 
-        db.session.add(playlist)
+        playlist = Playlist()                                                   # Create a playlist object from Playlist model
+        playlist.name = faker.catch_phrase()
+        playlist.owner_id = random.choice(users).id
+        playlist.collaborative = False
+        playlist.public = True
+
+        collection = Collection()                                                   # Create a playlist object from Playlist model
+        collection.name = faker.catch_phrase()
+        collection.owner_id = random.choice(users).id
+        collection.collaborative = False
+        collection.public = True
+
         db.session.add(track)
+        db.session.add(playlist)
+        db.session.add(collection)
     db.session.commit()
-
-    for i in range(5):
-        artist = Artist()
-        artist.name = faker.name_nonbinary()
-
-        db.session.add(artist)
-    db.session.commit()  
     
     print("Tables seeded")                                                      # Print a message to let the user know they 

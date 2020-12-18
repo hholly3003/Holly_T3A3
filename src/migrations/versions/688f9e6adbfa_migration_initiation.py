@@ -1,8 +1,8 @@
-"""Initial Migration
+"""migration initiation
 
-Revision ID: a9a76c3c9cb5
+Revision ID: 688f9e6adbfa
 Revises: 
-Create Date: 2020-12-17 12:53:30.554045
+Create Date: 2020-12-18 16:57:04.447471
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a9a76c3c9cb5'
+revision = '688f9e6adbfa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,6 @@ def upgrade():
     op.create_table('albums',
     sa.Column('album_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('album_type', sa.Enum('ALBUM', 'SINGLE', 'COMPILATION', name='albumtype'), nullable=False),
     sa.Column('release_date', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('album_id')
     )
@@ -42,6 +41,13 @@ def upgrade():
     sa.Column('artist_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['album_id'], ['albums.album_id'], ),
     sa.ForeignKeyConstraint(['artist_id'], ['artists.artist_id'], )
+    )
+    op.create_table('album_types',
+    sa.Column('at_id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('album_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['album_id'], ['albums.album_id'], ),
+    sa.PrimaryKeyConstraint('at_id')
     )
     op.create_table('collections',
     sa.Column('collection_id', sa.Integer(), nullable=False),
@@ -107,6 +113,7 @@ def downgrade():
     op.drop_table('profiles')
     op.drop_table('playlists')
     op.drop_table('collections')
+    op.drop_table('album_types')
     op.drop_table('album_artist')
     op.drop_table('users')
     op.drop_table('artists')

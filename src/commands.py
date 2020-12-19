@@ -30,8 +30,13 @@ def seed_db():
 
     for i in range(5):                                                           # Do this 5 times
         user = User()                                                           # Create an user object from the User model
+        if i == 0:
+            user.is_admin = True
+        else:
+            user.is_admin = False
         user.email = f"test{i+1}@test.com"                                      # Assign an email to the user object
         user.password = bcrypt.generate_password_hash("123456").decode("utf-8") # Assign ta hashed password to the user object
+        
         db.session.add(user)                                                    # Add the user to the db session
         users.append(user)                                                      # Append the user to the users list
 
@@ -58,8 +63,7 @@ def seed_db():
     for at in album_types:
         album_type = AlbumType()
         album_type.name = at
-        for album in albums:
-            album_type.album_id = album.album_id
+        album_type.album_id = random.choice(albums).album_id
 
         db.session.add(album_type)
     db.session.commit()

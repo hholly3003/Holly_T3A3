@@ -1,5 +1,6 @@
 from main import ma
 from models.Album import Album
+from schemas.AlbumTypeSchema import AlbumTypeSchema
 from marshmallow.validate import Length
 
 class AlbumSchema(ma.SQLAlchemyAutoSchema):

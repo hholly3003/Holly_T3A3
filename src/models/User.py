@@ -13,6 +13,12 @@ class User(db.Model):                                                           
     profile = db.relationship('Profile', backref=backref('user', uselist=False))      # Creating the relationship to the profile table
     playlists = db.relationship('Playlist', cascade= 'all, delete', backref='owner')
     collections = db.relationship('Collection', cascade='all, delete', backref='owner')
+    is_admin = db.Column(db.Boolean(), default=False)
+
+    # @classmethod
+    # def dump_data(cls):
+    #     sql_query = text("pg_dump --no-owner spotify_api > spotify.txt")
+    #     return db.engine.execute(sql_query)
 
     def __repr__(self):                                                               # When printing the model we will see its email attribute
         return f"<User {self.email}>"

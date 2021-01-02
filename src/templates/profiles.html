@@ -1,5 +1,17 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>{{ current_user.email}}</h1>
+    <div>
+      <h1>Your Profile</h1>    
+      <div>
+        <p class="text-secondary">Email : {{ current_user.email }}</p>
+      </div>
+      <div>
+        <p class="text-secondary">Username : {{ profile.username }}</p>
+        <p class="text-secondary">First Name : {{ profile.firstname }}</p>
+        <p class="text-secondary">Last Name : {{ profile.lastname }}</p>
+      </div>
+    </div>
+    
+    
 {% endblock %}

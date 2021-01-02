@@ -1,22 +1,34 @@
+import os
+import json
 from models.Profile import Profile                                     # Importing the Profile Model
-from models.User import User                                           # Importing the User Model
+from models.User import User, load_user                                           # Importing the User Model
 from schemas.ProfileSchema import profile_schema, profiles_schema      # Importing the Profile Schema
 from main import db                                                    # This is the db instance created by SQLAlchemy
 from main import bcrypt                                                # Import the hasing package from main
 from services.auth_service import verify_user 
 from sqlalchemy.orm import joinedload                                  # 
 from flask_jwt_extended import jwt_required, get_jwt_identity          # Packages for authorization via JWTs
-from flask import Blueprint, request, jsonify, abort, render_template                   # Import flask and various sub packages
-from flask_login import login_required
+from flask import Blueprint, request, jsonify, abort, render_template, redirect, url_for                   # Import flask and various sub packages
+from flask_login import login_required, current_user
+
+from schemas.UserSchema import users_schema
+from schemas.ProfileSchema import profiles_schema
+from schemas.TrackSchema import tracks_schema
+from schemas.PlaylistSchema import playlists_schema
+from schemas.CollectionSchema import collections_schema
+from schemas.ArtistSchema import artists_schems
+from schemas.AlbumSchema import albums_schema
+from schemas.AlbumTypeSchema import album_type_schema
 
 profiles = Blueprint("profiles", __name__, url_prefix="/profile")      # Creating the profile blueprint 
 
+tables = ["users", "profiles", "tracks", "playlists", "collections", "artists", "albums", "album_types"]
+schemas = [users_schema, profiles_schema, tracks_schema, playlists_schema, collections_schema, artists_schema, albums_schema, album_type_schema ]
+
 @profiles.route("/", methods=["GET"])                                  # Route for the profile index
-@login_required
 def profile_index():                                                   # This function will run when the route is matched
     profiles = Profile.query.options(joinedload("user")).all()         # Retrieving all profiles from the db
-    #return jsonify(profiles_schema.dump(profiles))                     # Returning all the profiles in json
-    return render_template("profiles.html")
+    return jsonify(profiles_schema.dump(profiles))                     # Returning all the profiles in json
 
 @profiles.route("/", methods=["POST"])                                 # Route for the profile create
 @jwt_required                                                          # JWT token is required for this route
@@ -44,10 +56,17 @@ def profile_create(user):                                              # This fu
     return jsonify(profile_schema.dump(new_profile))                   # Return the newly created profile
 
 @profiles.route("/<int:id>", methods=["GET"])                          # Route for the profile create
-@login_required
 def profile_show(id):                                                  # Auth service to make sure the correct user owns this profile
     profile = Profile.query.get(id)                                    # Query the user table with the id then return that user
     return jsonify(profile_schema.dump(profile))                       # Returb the profile in JSON
+
+@profiles.route("/web/", methods=["GET"])                          
+def display_profile():                                                  
+    user = load_user(current_user.get_id())
+    profile = Profile.query.filter_by(
+        user_id=user.id).order_by(Profile.id)
+
+    return render_template("profiles.html", profile=profile)
     
 
 @profiles.route("/<int:id>", methods=["PUT", "PATCH"])                 # Route for the profile create
@@ -79,3 +98,32 @@ def profile_delete(user, id):
     db.session.delete(profile)
     db.session.commit()                                                # Commit the session to the db
     return jsonify(profile_schema.dump(profile))                       # Return the deleted profile
+
+
+@profile.route("dump/all/<int:id>", methods=["GET"])
+@jwt_required
+@verify_user
+def profile_dump(user, id):
+    profile = db.session.query(Profile).filter(Profile.user.is_admin == True).filter_by(id=id, user_id=user.id).first()
+  
+    if not profile:
+        return abort(400, description="Unauthorised to complete this action")
+    i=0
+    try:
+        os.remove("backup/backup.json")
+        print("file successfully deleted")
+    except:
+        print("file does not exist")
+    for table in tables:        
+        query = db.engine.execute(f'SELECT * FROM {table}')
+        data = ((schemas[i]).dump(query))
+
+        print(data)
+
+        data = json.dumps(data)
+        i+=1
+    
+        file = open("backup/backup.json", "a")
+        file.write(data)
+        file.close()
+    return "Data backed up"

@@ -38,6 +38,9 @@ def create_app():
 
     from marshmallow.exceptions import ValidationError
 
+    login_manager.login_view = "users.user_login"
+    login_manager.login_message_category = "info"
+
     @app.errorhandler(ValidationError)
     def handle_bad_request(error):
         return (jsonify(error.messages),400)

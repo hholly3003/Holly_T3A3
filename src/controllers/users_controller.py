@@ -1,5 +1,5 @@
 from main import db, bcrypt
-from flask import Blueprint, jsonify, request, abort, render_template, url_for, flash, redirect
+from flask import Blueprint, jsonify, request, abort, render_template, url_for, flash, redirect, request
 from models.User import User
 from schemas.UserSchema import user_schema, users_schema
 from flask_jwt_extended import create_access_token,jwt_required
@@ -43,8 +43,12 @@ def user_login():
 
         if existing_user and bcrypt.check_password_hash(existing_user.password, form.password.data):
             login_user(existing_user, remember=form.remember.data)
-            #NEED TO REDIRECT TO SHOW PROFILE IF HAVE TIME
-            return redirect(url_for(f"profiles.profile_index"))
+            next_page = request.args.get("next")
+            if next_page:
+                return redirect(next_page)
+            else:
+                #NEED TO REDIRECT TO SHOW PROFILE IF HAVE TIME
+                return redirect(url_for(f"profiles.profile_index"))
         else:
             flash("Login Unsuccessful. Please check your email and password", "danger")
     return render_template("login.html", form=form)

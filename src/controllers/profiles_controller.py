@@ -6,14 +6,17 @@ from main import bcrypt                                                # Import 
 from services.auth_service import verify_user 
 from sqlalchemy.orm import joinedload                                  # 
 from flask_jwt_extended import jwt_required, get_jwt_identity          # Packages for authorization via JWTs
-from flask import Blueprint, request, jsonify, abort                   # Import flask and various sub packages
+from flask import Blueprint, request, jsonify, abort, render_template                   # Import flask and various sub packages
+from flask_login import login_required
 
 profiles = Blueprint("profiles", __name__, url_prefix="/profile")      # Creating the profile blueprint 
 
 @profiles.route("/", methods=["GET"])                                  # Route for the profile index
+@login_required
 def profile_index():                                                   # This function will run when the route is matched
     profiles = Profile.query.options(joinedload("user")).all()         # Retrieving all profiles from the db
-    return jsonify(profiles_schema.dump(profiles))                     # Returning all the profiles in json
+    #return jsonify(profiles_schema.dump(profiles))                     # Returning all the profiles in json
+    return render_template("profiles.html")
 
 @profiles.route("/", methods=["POST"])                                 # Route for the profile create
 @jwt_required                                                          # JWT token is required for this route
@@ -41,6 +44,7 @@ def profile_create(user):                                              # This fu
     return jsonify(profile_schema.dump(new_profile))                   # Return the newly created profile
 
 @profiles.route("/<int:id>", methods=["GET"])                          # Route for the profile create
+@login_required
 def profile_show(id):                                                  # Auth service to make sure the correct user owns this profile
     profile = Profile.query.get(id)                                    # Query the user table with the id then return that user
     return jsonify(profile_schema.dump(profile))                       # Returb the profile in JSON

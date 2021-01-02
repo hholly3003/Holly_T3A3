@@ -3,6 +3,7 @@ import os
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "Dev Key"
+    SECRET_KEY = "Authkey"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):

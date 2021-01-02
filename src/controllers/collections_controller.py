@@ -67,3 +67,15 @@ def collection_delete(id, user=None):
     db.session.commit()
 
     return jsonify(collection_schema.dump(collection))
+
+@collections.route("/count", methods=["GET"])
+@jwt_required
+@verify_user
+def collection_count(user=None):
+    if user.is_admin == False:
+        return abort(401, description="Unauthorised to this feature")
+
+    query = db.session.query(Collection)
+
+    count = query.count()
+    return jsonify(count)

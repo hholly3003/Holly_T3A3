@@ -16,7 +16,7 @@ from schemas.ProfileSchema import profiles_schema
 from schemas.TrackSchema import tracks_schema
 from schemas.PlaylistSchema import playlists_schema
 from schemas.CollectionSchema import collections_schema
-from schemas.ArtistSchema import artists_schems
+from schemas.ArtistSchema import artists_schema
 from schemas.AlbumSchema import albums_schema
 from schemas.AlbumTypeSchema import album_type_schema
 
@@ -100,7 +100,7 @@ def profile_delete(user, id):
     return jsonify(profile_schema.dump(profile))                       # Return the deleted profile
 
 
-@profile.route("dump/all/<int:id>", methods=["GET"])
+@profiles.route("dump/all/<int:id>", methods=["GET"])
 @jwt_required
 @verify_user
 def profile_dump(user, id):

@@ -1,5 +1,5 @@
 from main import db
-from flask import Blueprint, request, jsonify, abort
+from flask import Blueprint, request, jsonify, abort, render_template
 from models.Collection import Collection
 from models.User import User
 from schemas.CollectionSchema import collection_schema, collections_schema
@@ -12,7 +12,8 @@ collections = Blueprint("collections", __name__, url_prefix="/collections")
 @collections.route("/", methods=["GET"])
 def collection_index():
     collections = Collection.query.options(joinedload("owner")).all()
-    return jsonify(collections_schema.dump(collections))
+    #return jsonify(collections_schema.dump(collections))
+    return render_template("collections.html", collections=collections)
 
 @collections.route("/", methods=["POST"])
 @jwt_required

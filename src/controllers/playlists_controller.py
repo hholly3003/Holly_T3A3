@@ -39,8 +39,7 @@ def playlist_create(user=None):
 def playlist_show(id):
     #Return a single playlist
     playlist = Playlist.query.get(id)
-    #return jsonify(playlist_schema.dump(playlist))
-    return render_template("playlists_detail.html", playlist_tracks=playlist.playlist_tracks)
+    return jsonify(playlist_schema.dump(playlist))
 
 @playlists.route("/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required
@@ -82,4 +81,3 @@ def playlist_count(user=None):
 
     count = query.count()
     return jsonify(count)
-    

@@ -10,12 +10,10 @@ from datetime import timedelta
 
 users = Blueprint("users", __name__, url_prefix="/users")
 
-#TEMPORARY ROUTE LATER MERGE TO USER_REGISTER ROUTE
 @users.route("/register", methods=["GET", "POST"])
 def user_register():
-    #NEED TO REDIRECT TO SHOW PROFILE IF HAVE TIME
     if current_user.is_authenticated:
-        return redirect(url_for("profiles.profile_index"))
+        return redirect(url_for("profiles.display_profile"))
     form = RegistrationForm()
     if form.validate_on_submit():
         existing_user = User.query.filter_by(email=form.email.data).first()
@@ -34,9 +32,8 @@ def user_register():
 
 @users.route("/login", methods=["GET","POST"])                                                            # Login route
 def user_login():
-    #NEED TO REDIRECT TO SHOW PROFILE IF HAVE TIME
     if current_user.is_authenticated:
-        return redirect(url_for("profiles.profile_index"))
+        return redirect(url_for("profiles.display_profile"))
     form = LoginForm()
     if form.validate_on_submit():
         existing_user = User.query.filter_by(email=form.email.data).first()
@@ -47,8 +44,7 @@ def user_login():
             if next_page:
                 return redirect(next_page)
             else:
-                #NEED TO REDIRECT TO SHOW PROFILE IF HAVE TIME
-                return redirect(url_for(f"profiles.profile_index"))
+                return redirect(url_for(f"profiles.display_profile"))
         else:
             flash("Login Unsuccessful. Please check your email and password", "danger")
     return render_template("login.html", form=form)
@@ -97,27 +93,3 @@ def user_logout():
     # access_token = create_access_token(identity=str(user.id), expires_delta=expiry)                 # The access token, with the user id and the expiration date
 
     # return jsonify({ "token": access_token })                                                       # Return the token
-    
-
-@users.route("dump/all/<int:id>", methods=["GET"])
-@jwt_required
-@verify_user
-def dump_data(user, id):
-    #Check if the user is an admin
-    admin = db.session.query(User).filter(User.is_admin == True)
-
-    if not admin:
-        return abort(400, "Unauthorised for this feature")
-    
-    # Get databse table
-    tables = User.get_table()
-    tables_in_list = tables.fetchall()
-
-    for table in tables_in_list:
-        print(table)
-    
-    # Get the schema list
-    #Dump the data
-
-#     query = db.session.query(Profile)
-#     query = query.filter(Profile.admin == True).filter_by(profileid = id, user_id=user.id).first()

@@ -1,6 +1,7 @@
 # Introduction
 ## Objective
 The objective of this project is to implement a system with data and application layer for extended features proposed in T3A2.
+
 **R1:** The extended features suggested is to implement a feature called collection for existing Spotify system. Collection will populate several playlist and help to keep user interface to stay neat and tidy.
 
 **R2:** [Report : Privay and Security Analysis](docs/report_privacy_security.md)

@@ -13,7 +13,11 @@ playlists = Blueprint("playlists", __name__, url_prefix="/playlists")
 @playlists.route("/", methods=["GET"])
 def playlist_index():
     playlists = Playlist.query.options(joinedload("owner")).all()
-    #return jsonify(playlists_schema.dump(playlists))
+    return jsonify(playlists_schema.dump(playlists))
+
+@playlists.route("/web/", methods=["GET"])
+def display_playlist():
+    playlists = Playlist.query.options(joinedload("owner")).all()
     return render_template("playlists.html", playlists=playlists)
 
 @playlists.route("/", methods=["POST"])

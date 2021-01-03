@@ -17,10 +17,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('collections.collection_index') }}">Collection <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{{ url_for('collections.display_collection') }}">Collection <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('playlists.playlist_index') }}">Playlist <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{{ url_for('playlists.display_playlist') }}">Playlist <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Track <span class="sr-only">(current)</span></a>
@@ -41,8 +41,8 @@
               <a class="nav-item nav-link" href="{{ url_for('profiles.display_profile') }}">Profiles</a>
               <a class="nav-item nav-link" href="{{ url_for('users.user_logout') }}">Logout</a>
             {% else %}
-              <a class="nav-item nav-link" href="{{ url_for('users.user_login') }}">Login</a>
-              <a class="nav-item nav-link" href="{{ url_for('users.user_register') }}">Register</a>
+              <a class="nav-item nav-link" href="{{ url_for('users.login_page') }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for('users.register_page') }}">Register</a>
             {% endif %}
           </div>
         </div>

@@ -12,7 +12,11 @@ collections = Blueprint("collections", __name__, url_prefix="/collections")
 @collections.route("/", methods=["GET"])
 def collection_index():
     collections = Collection.query.options(joinedload("owner")).all()
-    #return jsonify(collections_schema.dump(collections))
+    return jsonify(collections_schema.dump(collections))
+
+@collections.route("/web/", methods=["GET"])
+def display_collection():
+    collections = Collection.query.options(joinedload("owner")).all()
     return render_template("collections.html", collections=collections)
 
 @collections.route("/", methods=["POST"])

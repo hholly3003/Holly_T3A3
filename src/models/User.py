@@ -22,11 +22,5 @@ class User(db.Model, UserMixin):                                                
     collections = db.relationship('Collection', cascade='all, delete', backref='owner')
     is_admin = db.Column(db.Boolean(), default=False)
 
-    # @classmethod
-    # def get_table(cls):
-    #     sql_query = text(f"SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER_BY table_name;")
-    #     # sql_query = text("pg_dump --no-owner spotify_api > spotify.txt")
-    #     return db.engine.execute(sql_query)
-
     def __repr__(self):                                                               # When printing the model we will see its email attribute
         return f"<User {self.email}>"
